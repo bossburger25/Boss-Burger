@@ -1,54 +1,26 @@
-
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Boss Burger | Cardápio</title>
-  <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-    header {
-      text-align: center;
-      color: #ffca28;
-      padding: 25px;
-    }
-    .produto {
-      background: #222;
-      padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    button {
-      background: #ffca28;
-      color: black;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>BOSS BURGER</h1>
-    <p>O sabor que manda!</p>
-  </header>
-
-  <h2>Nosso Cardápio</h2>
-
-  <div class="produto">
-    <h3>Boss Burger</h3>
-    <p>Hambúrguer artesanal</p>
-    <p>Preço em breve</p>
-    <button onclick="alert('Carrinho em desenvolvimento')">
-      Adicionar ao carrinho
-    </button>
-  </div>
-</body>
-</html>
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Boss Burger | Cardápio</title><style>
+:root{font-family:system-ui,Arial;background:#15100d;color:#fff}*{box-sizing:border-box}body{margin:0}header{background:#20140c;padding:24px 18px;text-align:center;border-bottom:3px solid #ff921d}h1{color:#ff921d;margin:0;font-size:32px}header p{margin:6px;color:#ddd}main{max-width:720px;margin:auto;padding:16px}h2{color:#ff921d}.note{font-size:13px;color:#cbbcb0}.tabs{display:flex;gap:8px;overflow:auto;padding-bottom:12px}.tabs button{white-space:nowrap}button,select,input,textarea{font:inherit}button{border:0;border-radius:9px;padding:10px 13px;background:#ff921d;color:#21140c;font-weight:700;cursor:pointer}.tabs button{background:#39291e;color:white}.tabs button.active{background:#ff921d;color:#17110d}.item{background:#241b16;border:1px solid #483222;padding:14px;border-radius:12px;margin:10px 0;display:flex;justify-content:space-between;gap:12px}.item strong{color:#ffad47}.item p{font-size:13px;color:#ddd;margin:7px 0}.item small{color:#c9bdb5}.item button{align-self:center;min-width:46px}.cart{position:sticky;bottom:0;background:#ff921d;color:#21140c;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 -5px 20px #0008}.cart button{background:#24160d;color:white}.panel{background:#241b16;padding:15px;border-radius:12px;margin-top:16px}.panel label{display:block;margin:12px 0 5px}.panel input,.panel select,.panel textarea{width:100%;padding:11px;border-radius:8px;background:#fff;color:#171717;border:0}.cartline{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #594233}.cartline button{padding:4px 10px}.hidden{display:none}.warning{background:#422c14;border-radius:8px;padding:10px;font-size:13px}footer{text-align:center;padding:24px;color:#a99c91;font-size:12px}
+</style></head><body><header><h1>🍔 BOSS BURGER</h1><p>Cardápio digital • Mesas e delivery</p></header><main><div class="warning">🚧 Demonstração: preços de referência, ainda não confirmados. Os pedidos não são enviados à cozinha.</div><h2>Nosso cardápio</h2><div class="tabs" id="tabs"></div><div id="items"></div><section class="panel hidden" id="checkout"><h2>Seu pedido</h2><div id="cartItems"></div><h3 id="total"></h3><label>Tipo de pedido</label><select id="mode"><option value="mesa">Consumir na mesa</option><option value="delivery">Delivery</option></select><div id="tableFields"><label>Número da mesa</label><input id="table" type="number" min="1" placeholder="Ex.: 5"></div><div id="deliveryFields" class="hidden"><label>Nome</label><input id="name" placeholder="Seu nome"><label>Telefone</label><input id="phone" type="tel" placeholder="DDD + número"><label>Endereço completo</label><textarea id="address" rows="3" placeholder="Rua, número, bairro, referência"></textarea></div><label>Observações</label><textarea id="notes" rows="2" placeholder="Ex.: sem cebola"></textarea><p class="note">O total não inclui eventual taxa de entrega. Nenhum pedido será enviado ou cobrado nesta demonstração.</p><button id="finish">Gerar resumo de teste</button><div id="summary"></div></section></main><div class="cart"><strong id="cartCount">Carrinho (0)</strong><button id="showCart">Ver pedido</button></div><footer>Boss Burger • Protótipo inicial</footer><script>
+const products=[
+['Boss Artesanal','Hambúrgueres',18,'Pão brioche, hambúrguer artesanal, muçarela, maionese caseira, molho cheddar e cebola caramelizada'],
+['Smash Bacon','Hambúrgueres',18,'Pão brioche, hambúrguer artesanal, muçarela, maionese caseira, molho cheddar, bacon e geleia de abacaxi'],
+['Boss Salad','Hambúrgueres',18,'Pão brioche, hambúrguer artesanal, muçarela, maionese caseira, molho cheddar, alface e tomate'],
+['Duplo Bacon','Hambúrgueres',25,'Dois hambúrgueres artesanais de 80g, muçarela, maionese caseira, cheddar, bacon e geleia de abacaxi'],
+['Duplo Smash','Hambúrgueres',25,'Dois hambúrgueres artesanais de 80g, muçarela, maionese caseira, cheddar e cebola caramelizada'],
+['Boss Sertanejo','Hambúrgueres',25,'Pão brioche, carne de sol 120g, muçarela, maionese caseira e geleia de abacaxi'],
+['Mini Smash — Abacaxi','Hambúrgueres',12,'Pão brioche, hambúrguer artesanal 80g, muçarela, maionese caseira e geleia de abacaxi'],
+['Mini Smash — Cebola','Hambúrgueres',12,'Pão brioche, hambúrguer artesanal 80g, muçarela, maionese caseira e cebola caramelizada'],
+['Combo Mini','Combos',24.99,'Mini Smash + batata + refrigerante lata'],
+['Combo Artesanal','Combos',33,'Boss Artesanal + batata + refrigerante lata'],
+['Combo Bacon','Combos',33,'Smash Bacon + batata + refrigerante lata'],
+['Salad Classic','Combos',33,'Boss Salad + batata + refrigerante lata'],
+['CB Duplo Bacon','Combos',40,'Duplo Bacon + batata + refrigerante lata'],
+['CB Duplo Smash','Combos',40,'Duplo Smash + batata + refrigerante lata'],
+['Batata Frita M','Batatas',10,'Porção média'],['Batata Frita G','Batatas',15,'Porção grande'],['Batata Cheddar Bacon','Batatas',20,'Batata com cheddar e bacon'],
+['Refrigerante Lata','Bebidas',6,'Lata'],['Refrigerante 1 litro','Bebidas',10,'Garrafa de 1 litro'],['Refrigerante 2 litros','Bebidas',15,'Garrafa de 2 litros']
+];
+const brl=n=>n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});const cart=new Map();let category='Hambúrgueres';const $=id=>document.getElementById(id);function render(){const cats=['Hambúrgueres','Combos','Batatas','Bebidas'];$('tabs').replaceChildren(...cats.map(c=>{let b=document.createElement('button');b.textContent=c;b.className=c===category?'active':'';b.onclick=()=>{category=c;render()};return b}));$('items').replaceChildren(...products.map((p,i)=>({p,i})).filter(x=>x.p[1]===category).map(({p,i})=>{let box=document.createElement('div');box.className='item';let content=document.createElement('div');let title=document.createElement('strong');title.textContent=p[0]+' — '+brl(p[2]);let desc=document.createElement('p');desc.textContent=p[3];content.append(title,desc);let btn=document.createElement('button');btn.textContent='+';btn.setAttribute('aria-label','Adicionar '+p[0]);btn.onclick=()=>{cart.set(i,(cart.get(i)||0)+1);renderCart()};box.append(content,btn);return box}));renderCart()}
+function renderCart(){let count=[...cart.values()].reduce((a,b)=>a+b,0);$('cartCount').textContent=`Carrinho (${count})`;let lines=[...cart].map(([i,q])=>{let d=document.createElement('div');d.className='cartline';let t=document.createElement('span');t.textContent=`${q}x ${products[i][0]} — ${brl(products[i][2]*q)}`;let b=document.createElement('button');b.textContent='−';b.setAttribute('aria-label','Remover uma unidade');b.onclick=()=>{if(q===1)cart.delete(i);else cart.set(i,q-1);renderCart()};d.append(t,b);return d});$('cartItems').replaceChildren(...lines);$('total').textContent='Subtotal: '+brl([...cart].reduce((sum,[i,q])=>sum+products[i][2]*q,0))}
+$('showCart').onclick=()=>{$('checkout').classList.toggle('hidden');$('checkout').scrollIntoView({behavior:'smooth'})};$('mode').onchange=()=>{$('tableFields').classList.toggle('hidden',$('mode').value!=='mesa');$('deliveryFields').classList.toggle('hidden',$('mode').value!=='delivery')};$('finish').onclick=()=>{if(!cart.size)return alert('Adicione pelo menos um produto.');let mode=$('mode').value;if(mode==='mesa'&&!$('table').value)return alert('Informe a mesa.');if(mode==='delivery'&&(!$('name').value.trim()||!$('phone').value.trim()||!$('address').value.trim()))return alert('Preencha nome, telefone e endereço.');let s=document.createElement('div');s.className='warning';s.style.marginTop='12px';let lines=[...cart].map(([i,q])=>`${q}x ${products[i][0]}`).join('\n');s.textContent='PEDIDO DE DEMONSTRAÇÃO — NÃO ENVIADO\n'+(mode==='mesa'?'Mesa: '+$('table').value:'Delivery: '+$('name').value+' | '+$('address').value)+'\n'+lines+'\n'+$('total').textContent+'\nObservações: '+$('notes').value;s.style.whiteSpace='pre-wrap';$('summary').replaceChildren(s)};render();
+</script></body></html>
