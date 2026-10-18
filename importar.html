@@ -1,0 +1,32 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Importar cardápio | Boss Burger</title><style>body{background:#17100c;color:#fff2e4;font:16px system-ui;margin:0;padding:24px}.box{max-width:650px;margin:auto;background:#291a12;padding:24px;border-radius:18px}h1{color:#ff981a}input,button{font:inherit;padding:13px;border-radius:9px;width:100%;box-sizing:border-box;margin:6px 0 12px}input{background:#150f0b;border:1px solid #9b6032;color:white}button{background:#ff981a;border:0;font-weight:700}button:disabled{opacity:.5}small{color:#d9bda8}#status{white-space:pre-wrap;line-height:1.5}</style></head><body><main class="box"><h1>🍔 Importar cardápio Boss Burger</h1><p>Importação única de 20 itens do cardápio enviado. Os preços e descrições poderão ser alterados depois no painel.</p><p><strong>Segurança:</strong> entre com o administrador do Firebase. A importação exige as permissões das regras do Firestore.</p><label>E-mail<input id="email" type="email" value="bossburgersistema@gmail.com" autocomplete="username"></label><label>Senha<input id="password" type="password" autocomplete="current-password"></label><button id="login">1. Entrar</button><button id="import" disabled>2. Importar 20 produtos</button><p><small>IDs fixos evitam duplicar estes mesmos 20 produtos se clicar novamente. Produtos já existentes com outros IDs não serão apagados.</small></p><div id="status" role="status"></div></main><script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
+import {getFirestore,doc,writeBatch} from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
+const app=initializeApp({apiKey:'AIzaSyCfT8Sf4zjmbYx5NyT-zbdh9k7fIZ-1ybs',authDomain:'boas-burger.firebaseapp.com',projectId:'boas-burger',storageBucket:'boas-burger.firebasestorage.app',messagingSenderId:'187238167528',appId:'1:187238167528:web:0b23d3af442e61b083aa5d'});
+const auth=getAuth(app),db=getFirestore(app),$=id=>document.getElementById(id),email='bossburgersistema@gmail.com';
+const entries=[
+['boss-artesanal','Boss Artesanal','Pão brioche, hambúrguer artesanal, queijo muçarela, maionese caseira, molho cheddar e cebola caramelizada','Hambúrgueres',18],
+['smash-bacon','Smash Bacon','Pão brioche, hambúrguer artesanal, queijo muçarela, maionese caseira, molho cheddar, bacon e geleia de abacaxi','Hambúrgueres',18],
+['boss-salad','Boss Salad','Pão brioche, hambúrguer artesanal, queijo muçarela, maionese caseira, molho cheddar, alface americano e tomate','Hambúrgueres',18],
+['duplo-bacon','Duplo Bacon','Pão brioche, 2 hambúrgueres artesanais de 80 g, queijo muçarela, maionese caseira, molho cheddar, bacon e geleia de abacaxi','Hambúrgueres',25],
+['duplo-smash','Duplo Smash','Pão brioche, 2 hambúrgueres artesanais de 80 g, queijo muçarela, maionese caseira, molho cheddar e cebola caramelizada','Hambúrgueres',25],
+['boss-sertanejo','Boss Sertanejo','Pão brioche, carne de sol 120 g, queijo muçarela, maionese caseira e geleia de abacaxi','Hambúrgueres',25],
+['mini-smash-abacaxi','Mini Smash — Geleia de abacaxi','Pão brioche, hambúrguer artesanal de 80 g, queijo muçarela, maionese caseira e geleia de abacaxi','Hambúrgueres',12],
+['mini-smash-cebola','Mini Smash — Cebola caramelizada','Pão brioche, hambúrguer artesanal de 80 g, queijo muçarela, maionese caseira e cebola caramelizada','Hambúrgueres',12],
+['combo-mini','Combo Mini','Mini Smash + batata + refrigerante lata','Combos',24.99],
+['combo-artesanal','Combo Artesanal','Boss Artesanal + batata + refrigerante lata','Combos',33],
+['combo-bacon','Combo Bacon','Smash Bacon + batata + refrigerante lata','Combos',33],
+['salad-classic','Salad Classic','Boss Salad + batata + refrigerante lata','Combos',33],
+['cb-duplo-bacon','CB Duplo Bacon','Duplo Bacon + batata + refrigerante lata','Combos',40],
+['cb-duplo-smash','CB Duplo Smash','Duplo Smash + batata + refrigerante lata','Combos',40],
+['batata-frita-m','Batata Frita M','Porção média de batata frita','Batatas',10],
+['batata-frita-g','Batata Frita G','Porção grande de batata frita','Batatas',15],
+['batata-cheddar-bacon','Batata Cheddar Bacon','Batata com cheddar e bacon','Batatas',20],
+['refrigerante-lata','Refrigerante Lata','Consulte os sabores disponíveis','Bebidas',6],
+['refrigerante-1l','Refrigerante 1 litro','Consulte os sabores disponíveis','Bebidas',10],
+['refrigerante-2l','Refrigerante 2 litros','Consulte os sabores disponíveis','Bebidas',15]
+];
+$('login').onclick=async()=>{try{await signInWithEmailAndPassword(auth,$('email').value.trim(),$('password').value);$('password').value='';$('status').textContent='Login realizado.'}catch(e){$('status').textContent='Erro no login: '+e.code}};
+onAuthStateChanged(auth,u=>{const ok=!!u&&u.email?.toLowerCase()===email;$('import').disabled=!ok;$('status').textContent=u?(ok?'Conectado: '+u.email+'. Pronto para importar.':'Conta conectada não autorizada: '+u.email):'Entre com o administrador.'});
+$('import').onclick=async()=>{if(auth.currentUser?.email?.toLowerCase()!==email)return;$('import').disabled=true;$('status').textContent='Importando 20 produtos...';try{const batch=writeBatch(db);for(const [id,nome,descricao,categoria,preco] of entries){batch.set(doc(db,'produtos','cardapio-'+id),{nome,descricao,categoria,preco,precoPromocional:0,promocao:false,disponivel:true});}await batch.commit();$('status').textContent='✅ 20 produtos importados com sucesso! Abra o cardápio e confira. Você pode apagar importar.html do GitHub agora.'}catch(e){$('status').textContent='❌ Não foi possível importar: '+e.code+' — '+e.message;$('import').disabled=false}};
+</script></body></html>
